@@ -10,6 +10,7 @@ import (
 	"github.com/ziutek/mymysql/native"
 	"io"
 	"net"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -25,7 +26,14 @@ type rowsRes struct {
 	simpleQuery mysql.Stmt
 }
 
+func dbg(err error) {
+	fmt.Println("Connection error in MYSQL")
+	fmt.Println(err.Error())
+	fmt.Println(string(debug.Stack()))
+}
+
 func errFilter(err error) error {
+	dbg(err)
 	if err == io.ErrUnexpectedEOF {
 		return driver.ErrBadConn
 	}
